@@ -1,0 +1,88 @@
+* *Important to know*
+including information and topics both from and outside of course material.
+
+** Important Registers
+*** EIMSK
+*** SREG
+*** 
+
+** Important for dealing with AVR/Atmel programming & debuggning
+
+** Interrupts
+*** For *external interrupts* to happen you need to:
+#+BEGIN_SRC asm
+; include definitions for the ATmega2560
+; (see [m2560def.inc](https://github.com/DarkSector/AVR/blob/master/asm/include/m2560def.inc))
+.include "m2560def.inc"
+
+; Initialize starting point for program
+; CSEG = Code Segment.
+; (see doc1022_AVR_Assembler_user_guide.pdf p.9)
+.cseg
+; Instruction after this will be loaded to memory location $0000
+; (see doc2549_ATmega2560.pdf p.105) 
+.org 0x00   
+; Jumps to a subroutine called reset (name is up to you)
+rjmp reset 
+
+; Initialize interrupt start
+.org int0addr
+rjmp interrupt
+
+; Loads the beginning of our code to the first free byte in memory
+;  Why waste space ey?
+; (see doc2549_ATmega2560.pdf p.106)
+; (... so after this word, "57 $0070 (3) USART3 TX USART3 Tx Complete")
+.org 0x72
+; Our subroutine that we named ourselves (reset/Reset) seems standard
+reset: 
+; Initialize the Stack Pointer
+; Instructions such as rjmp and rcall will not work properly otherwise
+; see [m2560def.inc](https://github.com/DarkSector/AVR/blob/master/asm/include/m2560def.inc) line 1747
+ldi temp, LOW(RAMEND)
+out SPL, temp
+ldi temp, HIGH(RAMEND)
+out SPH, temp
+
+; SER – Set all Bits in Register
+; Quick and clean command to set all bits to 1 in a byte.
+; Use this instead of the "ldi" instruction
+ser temp
+; Set data direction for PORTB as output
+out DDRB, temp
+	
+; Set data direction for PORTD as input
+; Quick and clean command to set all bits to 0 in a byte.
+; Use this instead of the "ldi" instruction
+clr temp
+out DDRD, temp
+
+; Enable external interrupt on PIND0
+; (HELP NEEDED: What are our options here?)							  
+ldi temp, (1<<int0)
+; EIMSK – External Interrupt Mask Register
+; (see doc2549_ATmega2560.pdf p.115)
+out EIMSK, temp
+	
+; Set interrupt sense control to "on rising edge"
+; (HELP NEEDED: What are our options here?)
+ldi temp, (3<<ISC00) ;
+; STS – Store Direct to Data Space
+;EICRA – External Interrupt Control Register A
+; (see doc2549_ATmega2560.pdf p.113)
+sts EICRA, temp
+
+; SEI – Set Global Interrupt Flag
+; (see Instruction set.pdf)
+sei
+
+; Now after Setting everything up, we can start our main loop
+main:
+  ; Main program instructions goes here
+
+interrupt:
+  ; Code we want to run when our initialized interrupt happens
+
+  ; Return to address saved in SP when interrupt happened
+  reti
+#+END_SRC
