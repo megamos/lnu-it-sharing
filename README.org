@@ -1,4 +1,11 @@
-* LNU IT Share
-sharing usefull links, coursematerial, extractions, tutorials, explenations...
+* LNU IT Sharin
+a place where students of Linnaeus University share usefull links, coursematerial, extractions, tutorials, explenations...
+
+** Uploaded Courses
+*** 1DV607 Object Oriented Analyze & Design (OOA/D)
+*** 1DT301 Computer Technology
+
+** Courses to Upload
+*** ...
 
 <soon to come...>
