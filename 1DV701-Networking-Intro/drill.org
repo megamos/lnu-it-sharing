@@ -1,0 +1,881 @@
+* Chapter X (mostly 24)
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       012d07f7-a901-46ac-b267-0dc4e2b579f1
+   :END:
+How does IP software reassemble fragments that arrive out of order?
+
+*** Answer
+A sender places a unique identification number in the IDENTIFICATION field of each outgoing datagram (in the IPv4 header or the IPv6 fragment extension header). When a datagram is fragmented, the identification number is copied into each fragment. A receiver uses the identification number and IP source address in an incoming fragment to determine the datagram to which the fragment belongs. In addition, the FRAGMENT OFFSET field (in the IPv4 datagram header or IPv6 fragment extension header) tells a receiver where the payload in the fragment belongs in the original datagram.
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       f614a819-3770-43d1-9c06-9938fa0f1fd1
+   :END:
+What is the reassembly timer?
+
+*** Answer
+A receiver cannot hold fragments an arbitrarily long time because fragments occupy space in memory. To avoid exhausting memory, IP specifies a maximum time tohold fragments. When the first fragment arrives from a given datagram, the receiver starts a reassembly timer. If all fragments of a datagram arrive before the timer expires,the receiver cancels the timer and reassembles the datagram. However, if the timer ex-pires before all fragments arrive, the receiver discards the fragments that have arrived.
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       85fc3d07-c69b-4dd9-b7fd-c0d001696f19
+   :END:
+IP is incapable of supporting multiple applications because...?
+
+*** Answer
+fields in an datagram header only identify computers. That is, from IP’s point of view, the source and destination fields in a datagram identify a host computer; an IP address does not contain additional bits to identify an application program on the host. We say that IP treats a computer as an endpoint of communication.
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       09c36a99-9be4-4a53-b383-a2c0d60efaaa
+   :END:
+UDP can be characterized as: ?
+
+*** Answer
+  - End-to-end. UDP is a transport protocol that can distinguish among multiple application programs running on a given computer.
+
+  - Connectionless. The interface that UDP supplies to applications follows a connectionless paradigm.
+
+  - Message-oriented. An application that uses UDP sends and re-
+ceives individual messages.
+
+  - Best-effort. UDP offers applications the same best-effort delivery semantics as IP.
+
+  - Arbitrary Interaction. UDP allows an application to send to many other applications, receive from many other applications, or com- municate with exactly one other application.
+
+  - Operating System Independent. UDP provides a means of identify- ing application programs that does not depend on identifiers used by the local operating system.
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       0c2fe9b4-8ac0-4e84-bb87-d9cce7688b2d
+   :END:
+The message-oriented interface has several important consequences for program-
+mers, what are they?
+
+*** Answer
+On the positive side, applications that use UDP can depend on the protocol to preserve data boundaries — each message UDP delivers to a receiving application will be exactly the same as was transmitted by the sender. On the negative side, each UDP message must fit into a single IP datagram. Thus, the IP datagram size forms an abso- lute limit on the size of a UDP message.
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       bfccd5cf-2277-442a-a33a-24da8810f1c2
+   :END:
+Because UDP offers the same best-effort delivery semantics as IP, a UDP message can be...?
+
+*** Answer
+... lost, duplicated, delayed, delivered out-of-order or bits can be corrupted in transit. UDP only suffices for applications such as voice or video that can tolerate delivery errors.
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       5ec6ee08-a8b1-47e6-bbf3-7be44642aa92
+   :END:
+UDP allows four styles of interaction, they are?
+
+*** Answer
+    - 1-to-1
+    - 1-to-many
+    - Many-to-1
+    - Many-to-many
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       9eb6e18b-786b-4a26-9e0b-e421e1781008
+   :END:
+What are the UDP fields and what are they used for?
+
+*** Answer
+The first two fields of the UDP header contain 16-bit protocol port numbers. Field UDP SOURCE PORT contains the port number of the sending application, and field UDP DESTINATION PORT contains the port number of the application to which the message is being sent. Field UDP MESSAGE LENGTH specifies the total size of the UDP message, measured in 8-bit bytes.
+
+Although the UDP header contains a sixteen-bit field named UDP CHECKSUM, the checksum is optional. A sender can either choose to compute a checksum or set all bits of the checksum field to zero. When a message arrives at the destination, UDP software examines the checksum field, and only verifies the checksum if the value is nonzero†.
+
+PAYLOAD (Data in the message)
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       4ce3c84a-65a3-416a-9fd8-6ee7282e64a6
+   :END:
+How does UDP calculate the checksum?
+
+*** Answer
+When com- puting the checksum, UDP software includes a pseudo header that contains the IP source, IP destination, and type (i.e., PROTO or NEXT-HEADER) fields from the IP datagram and a UDP datagram length.
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       ddb27e94-9920-4a68-8535-8f8944b71fd1
+   :END:
+UDP requires two levels of encapsulation. Why?
+
+*** Answer 
+Each UDP message is encapsulated in an IP datagram for transmission across the Internet. The datagram is encapsulated in a frame for transmission across an individual network.
+
+* Chapter 25
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       47273bae-75e6-4d6a-8235-d904e9f6122a
+   :END:
+The service offered by TCP has seven major features, what are they?
+
+*** Answer
+  - Connection Orientation. TCP provides connection-oriented service in which an application must first request a connection to a destina- tion, and then use the connection to transfer data.
+
+  - Point-To-Point Communication. Each TCP connection has exactly two endpoints.
+
+  - Complete Reliability. TCP guarantees that the data sent across a connection will be delivered exactly as sent, complete and in order.
+
+  - Full Duplex Communication. A TCP connection allows data to flow in either direction, and allows either application program to send data at any time.
+
+  - Stream Interface. TCP provides a stream interface, in which an ap- plication sends a continuous sequence of octets across a connec- tion. TCP does not group data into records or messages, and does not guarantee to deliver data in the same size pieces that were transferred by the sending application.
+
+  - Reliable Connection Startup. TCP allows two applications to reli- ably start communication.
+
+  - Graceful Connection Shutdown. Before closing a connection, TCP ensures that all data has been delivered and that both sides have agreed to shut down the connection.
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       9d043596-47c6-4333-b6cf-a44f913bef7b
+   :END:
+An end-to-end transport protocol must be carefully designed to achieve efficient,
+reliable transfer. The major problems are?
+
+*** Answer
+  - Unreliable Communication. Messages sent across the Internet can be lost, duplicated, corrupted, delayed, or delivered out of order.
+
+  - End System Reboot. At any time during communication, either of the two end systems might crash and reboot. There must be no confusion between sessions, even though some embedded systems can reboot in less time than it takes a packet to cross the Internet.
+
+  - Heterogeneous End Systems. An application running on a powerful processor can generate data so fast that it overruns an application running on a slow processor.
+
+  - Congestion In The Internet. If senders aggressively transmit data, intermediate switches and routers can become overrun with pack- ets, analogous to a congested highway.
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       ce747bb6-cc53-4892-b448-5909034380db
+   :END:
+Examples of basic techniques data communications systems use to overcome some of the problems of end-to-end transport..
+
+*** Answer
+  - For example, to compensate for bits that are changed during transmission, a protocol might include parity bits, a checksum, or a cyclic redundancy check (CRC).
+
+  - To handle duplicate packets and out-of-order deliveries, transport protocols use sequencing.
+
+  - To handle packet loss, transport protocols use positive acknowledgement with re- transmission
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       c993079d-38a1-4e35-99bc-1acdcd482d48
+   :END:
+The simplest form of flow control is a [stop-and-go] system
+in which a sender [waits after transmitting] each packet
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       5e9c1cd3-7e97-425d-80f5-c92433ddee09
+   :END:
+Tw = Tg × W / Tw = min (C, Tg × W)
+
+*** Answer
+Tw is the throughput that can be achieved with a sliding window protocol, Tg is the throughput that can be achieved with a stop-and-go protocol, and W is the window
+size. C is the underlying hardware capacity
+
+** Question                                                           :drill: 
+   :PROPERTIES:
+   :ID:       6d6956f9-099d-4857-9de8-f468e40b59ea
+   :END:
+What is the meaning of /congestion/?
+*** Answer
+Switch 1 receives data at an aggregate rate of 2 Gbps, but can only forward 1 Gbps to Switch 2. The situation is known as congestion. Even if a switch temporarily
+stores packets in memory, congestion results in increased delay. If congestion persists, the switch will run out of memory and begin discarding packets. Although retransmission
+can be used to recover lost packets, retransmission sends more packets into the network. Thus, if the situation persists, an entire network can become unusable; the
+condition is known as congestion collapse.
+
+** Question                                                           :drill: 
+   :PROPERTIES:
+   :ID:       b6556749-6034-4f8a-a9c7-191de3e472c7
+   :END:
+Transport protocols attempt to avoid congestion collapse by?
+
+*** Answer
+monitoring the network and reacting quickly once congestion starts.
+There are two basic approaches:
+  - Arrange for intermediate systems (i.e., routers) to inform a sender when congestion occurs 
+  - Use increased delay or packet loss as an estimate of congestion 
+
+** Question                                                           :drill: 
+   :PROPERTIES:
+   :ID:       118f48bb-1c51-4737-a0c0-eeb32babbaf7
+   :END:
+TCP estimates round-trip delay... how?
+
+*** Answer
+Whenever it sends a message to which it expects a response, TCP records the time at which the message was sent. When a response arrives, TCP subtracts the time the message was sent from the current time to produce a new estimate of the round-trip delay for that connection. As it sends data packets and receives acknowledgements, TCP generates a sequence of round-trip estimates and uses a statistical function to produce a weighted  average. In addition to a weighted average, TCP keeps an estimate of the variance, and uses a linear combination of the estimated mean and variance when computing the time at which retransmission is needed.
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       6f6c76b6-3f61-42f2-aeee-dd751f80f3a4
+   :END:
+Explain /window advertisement/!
+
+*** Answer
+When a connection is established, each end of the connection allocates a buffer to hold incoming data and sends the size of the buffer to the other end. As data arrives, the receiving TCP sends acknowledgements, which specify the remaining buffer size. TCP uses the term window to refer to the amount of buffer space available at any time; a notification that specifies the size of the window is known as a window advertisement. A receiver sends a window advertisement with each acknowledgement.
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       9bdad34e-d2b8-4849-b63c-cfcad2760181
+   :END:
+To guarantee that connections are established or terminated reliably, TCP uses a 3-way handshake in which three messages are exchanged. Explain it!
+
+*** Answer
+each side sends a control message that specifies an initial buffer size (for flow control) and a sequence number. Scientists have proved that TCP’s 3-way exchange is necessary and sufficient to ensure unambiguous agreement despite packet loss, duplication, delay, and replay events†. Furthermore, the handshake ensures that TCP will not open or close a connection until both ends have agreed.
+
+TCP uses the term synchronization segment (SYN segment) to describe the control messages used in a 3-way handshake to create a connection, and the term FIN segment (finish segment) to describe control messages used in a 3-way handshake to close a connection.
+
+TCP requires each end to generate a random 32-bit sequence number that becomes the initial sequence for data sent. If an application attempts to establish a new TCP connection after a computer reboots, TCP chooses a new random number.
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       9e49de83-3cf5-4055-8317-da25d966df86
+   :END:
+Explain /slow start/ for TCP.
+
+*** Answer
+TCP begins by sending a single message containing data. If an acknowledgement arrives without additional loss, TCP doubles the amount of data being sent and sends two additional messages. If both acknowledgements arrive, TCP sends four messages, and so on. The exponential increase continues until TCP is sending half of the receiver’s advertised window. When one-half of the original window size is reached, TCP slows the rate of increase, and increases the window size linearly as long as congestion does not occur. The approach is known as slow start.
+
+* Chapter 4
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       8d008429-f21c-49ca-b331-4243af0e9c55
+   :END:
+The Domain Name System (DNS) provides a service that [maps human-readable symbolic names] to [computer addresses].
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       dbe3cd5d-dad5-4032-9900-3759b5167925
+   :END:
+What are /top-level-domains/ and how are they governed?
+
+*** Answer
+Top-level domains are controlled by the In- ternet Corporation for Assigned Names and Numbers (ICANN), which designates one or more domain registrars to administer a given top-level domain and approve specific names. Some TLDs are generic, which means they are generally available. Other TLDs are restricted to specific groups or government agencies.
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       c1ead2fe-fbfc-49af-90d7-bc3b0c0ee242
+   :END:
+In specifying details of communication, a programmer defines an application-layer
+protocol. There are two broad types of application-layer protocols. Which?
+
+*** Answer
+- Private Service: Only used by those creating it.
+- Standardized Service: Needs documentation and easy to interoperate for other devs.
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       93d15338-c4c6-40f8-9e2a-e084a15d14a0
+   :END:
+Application-layer protocols specify two aspects of interaction: [representation] and [transfer].
+
+[Data Representation Syntax of data items that are exchanged, specific form used during transfer, translation of integers, characters, and files sent between computers]
+
+[Data Transfer Interaction between client and server, message syntax and semantics, valid and invalid exchange error handling, and termination of interaction]
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       1c0cb1cd-26ce-4734-98fb-39fde6de2b92
+   :END:
+Be- cause the Web is complex, many protocol standards have been devised to specify vari- ous aspects and details. List the three key standards!
+
+*** Answer
+HyperText Markup Language (HTML): A representation standard used to specify the contents and layout of a web page
+
+Uniform Resource Locator (URL):
+A representation standard that specifies the format and meaning of web page identifiers
+
+HyperText Transfer Protocol (HTTP):
+A transfer protocol that specifies how a browser interacts with a web server to transfer data
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       40e7c0cb-d2c5-4e47-9fc6-9b08847dfd1f
+   :END:
+HTML has what characteristics?
+
+*** Answer
+- Uses a textual representation
+- Describes web pages that contain multimedia
+- Follows a declarative rather than procedural paradigm
+- Provides markup specifications instead of formatting
+- Permits a hyperlink to be embedded in an arbitrary object
+- Allows a document to include metadata
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       ee73578a-0eba-4922-8b9b-d81a920e318a
+   :END:
+The Web uses a syntactic form known as a Uniform Resource Locator (URL) to
+specify a web page. The general form of a URL is:
+[protocol:// computer_name:port/ document_name?parameters]
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       2471fc70-f798-40a2-a643-6cf19b7d1a2c
+   :END:
+Typical URLs that a user enters omit many of the parts. For example, the URL
+www.netbook.cs.purdue.edu omits the [protocol (http is assumed), the port (80 is assumed), the document name (index.html is assumed), and parameters (none are assumed).]
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       2810cc2c-7607-4186-b266-3b2202facc07
+   :END:
+HTTP can be characterized as follows:
+[  - Uses textual control messages
+  - Transfers binary data files
+  - Can download or upload data
+  - Incorporates caching]
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       8e572131-1897-4c32-b1cf-94c030d1b7ae
+   :END:
+Once it establishes a connection, a browser sends an HTTP request to the server. The four major request types:
+
+*** Answer
+GET
+Requests a document; server responds by sending status
+information followed by a copy of the document
+
+HEAD Requests status information; server responds by sending
+status information, but does not send a copy of the document
+
+POST Sends data to a server; the server appends the data to a
+specified item (e.g., a message is appended to a list)
+
+PUT
+Sends data to a server; the server uses the data to completely
+replace the specified item (i.e., overwrites the previous data)
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       36a74925-5db1-415d-951b-1891da604ca0
+   :END:
+Version information is important in HTTP because...?
+
+*** Answer
+ it allows the protocol to change and yet remain backward compatible. For example, when a browser that uses version 1.0 of the protocol interacts with a server that uses a higher version, the server reverts to the older version of the protocol and formulates a response accordingly.
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       a28384ab-9ddf-470f-bee7-86abb7cc3cc4
+   :END:
+How does HTML caching work?
+
+*** Answer
+A browser saves the Last-Modified date information along with the cached copy. Before it uses a document from the local cache, a browser makes a HEAD request to the server and compares the Last-Modified date of the server’s copy to the Last-Modified date on the cached copy. If the cached version is stale, the browser downloads the new version. 
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       56affa8d-792a-42c6-89c4-e6bcfc410102
+   :END:
+The Domain Name System (DNS) provides a service that [maps human-readable symbolic names to computer addresses]. Browsers, mail software, and most other Inter- net applications use the DNS.
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       3025935e-e8d8-49b7-9c3f-c73b8f1b3de6
+   :END:
+One of the main features of the Domain Name System is ...?
+
+*** Answer
+autonomy — the system is designed to allow each organization to assign names to computers or to change those names without informing a central authority. To achieve autonomy, each organization is permitted to operate DNS servers for its part of the hierarchy. 
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       b41fd56d-5612-4e8f-b3d6-b659cd5ea84b
+   :END:
+The translation of a domain name into an address is called [name resolution], and the name is said to be resolved to an [address]. Software to perform the translation is known as a [name resolver (or simply resolver)].
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       7de52d62-3e94-4d32-875b-9cbaee26f94b
+   :END:
+The locality of reference principle that forms the basis for caching applies to the Domain Name System in two ways. They are?
+
+*** Answer
+  - Spatial: A user tends to look up the names of local computers more often than the names of remote computers
+  - Temporal: A user tends to look up the same set of domain names repeatedly
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       9a096789-c86f-4130-914f-c37672c13f55
+   :END:
+Each entry in a DNS database consists of three items: a [domain name], a [record type], and a [value].
+
+[The record type specifies how the value is to be interpreted (e.g., that
+the value is an IPv4 address)]
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       f1ff225d-edc6-439e-8f0e-bc15fa4eaa07
+   :END:
+A query sent to a DNS server specifies both a [domain name] and a [type]; the server only returns a binding that matches the type of the query.
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       7c59f89c-f1dd-4cd0-93d0-d5e5c8f23ae9
+   :END:
+The DNS offers a CNAME type that is analogous to a symbolic link in a file system.. which means?
+
+*** Answer
+— the entry provides an alias for another DNS entry.
+
+
+** Question                                                           :drill:
+   :PROPERTIES:
+   :ID:       ac0de220-f3ab-458f-943d-72512e77ad4e
+   :END:
+What is abbreviations in DNS?
+
+*** Answer
+The DNS does not incorporate abbreviations — a server only responds to a full
+name. However, most resolvers can be configured with a set of suffixes that allow a user to abbreviate names.
+
+* Chapter 23
+** Question                                                           :drill:
+s a datagram travels across the Internet, the initial sender and each router along the path uses the [destination IP address] in the datagram to select a [next-hop] address, encapsulates the datagram in a [hardware frame], and transmits the frame across [one network].
+
+** Question                                                           :drill:
+Translation from a computer’s IP address to an equivalent [hardware address] is known as [address resolution], and an IP address is said to be [resolved] to the correct MAC address.
+
+** Question                                                           :drill:
+What does ARP stand for and how does it work?
+
+*** Answer
+Computer X broadcasts a re- quest that says, “I’m looking for the MAC address of a computer that has IPv4 address Y.” The broadcast only travels across one network. All computers receive the request, but only computer Y responds. “I’m the computer with IP address Y, and my MAC address is M.”
+
+  - An ARP message has fixed-size fields at the beginning of the message to specify the size of the hardware and protocol addresses being used. When ARP is used with IPv4 and Ethernet, the hardware address length is set to 6 oc- tets, because an Ethernet address is 48 bits long, and the protocol address length is set to 4, because an IPv4 address is 32 bits long.
+
+  - ARP software extracts and saves the information from a response so it can be used for subsequent packets
+
+
+  - When it needs to bind an address, ARP starts by searching the cache. If the binding is present in the cache, ARP uses the binding without transmitting a request. If the binding is not present in the cache, ARP broadcasts a request, waits for a response, updates the cache, and then proceeds to use the binding.
+
+
+  - ARP creates an important conceptual boundary between MAC addresses and IP ad- dresses: ARP hides the details of hardware addressing, and allows higher layers of software to use IP addresses
+
+** Question                                                           :drill:
+IP includes a companion protocol used to report errors back to the original source (i.e., the computer that sent the datagram). For IPv4, the protocol is the [Internet Con- trol Message Protocol (ICMP or ICMPv4). A modified version known as ICMPv6 was created for IPv6]
+
+** Question                                                           :drill:
+When a host or router receives an echo request message, [ICMP] software sends an echo reply that carries the same data as the request. Thus, a ping application sends a request to a remote host, [waits] for a reply, and either [declares that the host is reachable], or after a suitable timeout, declares that the [host is unreachable].
+
+** Question                                                           :drill:
+If a datagram carrying an ICMP error message causes an error, no error message is sent. The reason?
+
+*** Answer
+the designers wanted to avoid the Internet becoming congested carrying error messages about error messages.
+** Question                                                           :drill:
+Recall that IPv6 does not have broadcast, so how can an IPv6 node use ICMPv6 to find neighbors? 
+
+*** Answer
+IPv6 defines a multicast address to which all nodes on a network must listen. Therefore, IPv6-ND can multicast a message that asks neighbors to reply. The replies contain MAC addresses, which IPv6-ND records in a table analogous to an ARP cache. IPv6-ND contacts each neighbor periodically to verify that the neighbor is still active. Thus, the list always remains current, and is used when sending a datagram.
+
+** Question                                                           :drill:
+The question arises: how does the protocol software in a host or router begin operation? 
+
+*** Answer
+For a router, the answer is mundane: a manager must specify initial values for items such as the IP address for each network connection, the protocol software to run, and initial values for a forwarding table. The configuration is saved on disk, and a router loads the values during startup.
+
+** Question                                                           :drill:
+The question arises: how does the protocol software in a host or router begin operation? 
+
+Host configuration is more complex, and usually uses a two-step process known as bootstrapping†. What is it?
+
+*** Answer
+The first step occurs when a computer boots. The operating system fills in a basic set of configuration parameters that allow the protocol software to com- municate over a local network. In the second step, the protocol software fills in addi- tional information such as the computer’s IP address, the address mask, and the address of a local DNS server. In essence, protocol software is built with a set of parameters that control operation, and initialization fills in values for the parameters.
+
+** Question                                                           :drill:
+Various mechanisms have been created to allow a host computer to obtain network configuration parameters. They are?
+
+*** Answer
+  - An early mechanism, known as the Reverse Address Resolu- tion Protocol (RARP), is now being used in cloud data centers.
+  - The original version of ICMP included Address Mask Request and Router Discovery messages that can obtain the address mask used on a given network and the address of a router.
+  - The Bootstrap Protocol (BOOTP) allowed a computer to obtain an IPv4 address, an address mask, and the address of a default router.
+
+
+** Question                                                           :drill:
+Therefore, the IETF extended BOOTP, and changed the name to the Dynamic Host Configuration Pro- tocol (DHCP). DHCP allows an arbitrary computer to join a new network and obtain.. what and how?
+
+*** Answer
+an IP address automatically without requiring a server to be configured. The concept is sometimes termed plug-and-play networking. The point can be summarized:
+
+#+BEGIN_QUOTE
+DHCP allows a computer to move to a new network and obtain con- figuration information, without requiring an administrator to make manual changes to a server database.
+#+END_QUOTE
+
+** Question                                                           :drill:
+Although the protocol is straightforward, DHCP includes several important details that optimize performance. The three most significant are?
+
+*** Answer
+  - Recovery from loss or duplication
+  - Caching of a server address
+  - Avoidance of synchronized flooding
+
+if no response is received, a host retransmits its re- quest, and if a duplicate response arrives, a host ignores the extra copy. The second item means that once a host uses a DHCP Discover message to find a DHCP server, the host caches the server’s address. Thus, lease renewal is efficient.The third item means that DCHP takes steps to prevent synchronized requests. For example, synchronized requests might occur if all computers on a network reboot simul- taneously after a power failure. To avoid having all hosts on a network flood the DHCP server with simultaneous requests, DHCP requires each host to delay a random time before transmitting (or retransmitting) a request.
+
+
+** Question                                                           :drill:
+To avoid having all hosts on a network flood the DHCP server with simultaneous requests, DHCP requires each host to [delay a random time] before [transmitting (or retransmitting)] a request.
+
+** Question                                                           :drill:
+IPv6 was designed to use [autoconfiguration] rather than DHCPv6
+
+
+** Question                                                           :drill:
+Why do network managers prefer to manage multiple replay agents?
+
+*** Answer
+First, in a network with one DHCP server and multiple relay agents, administration of addresses is centralized into a single device. Thus, a network manager does not need to interact with multiple devices to change the lease policy or determine the current status. Second, many commercial routers contain a mechanism that provides DHCP relay service on all the networks to which the router attaches. Furthermore, re- lay agent facilities in a router are usually easy to configure (the configuration consists of enabling forwarding and specifying the address of a DHCP server), and the configu- ration is unlikely to change.
+
+
+** Question                                                           :drill:
+Explain IPv6 Autoconfiguration.
+
+*** Answer
+When IPv6 was created, the designers looked for ways to automate functionality. Network configuration was one of the prime targets. In particular, the designers wanted to make it possible for two isolated IPv6 nodes to communicate over an unadministered network that did not have any servers. Thus, instead of using DHCP, the designers en- visioned an IPv6 node generating its own unique IP address. The approach is known as
+IPv6 autoconfiguration.
+
+  - Step one: generate a prefix, and generate a suffix. Autoconfiguration specifies that if the network already has a globally unique prefix, a node should use the prefix. So, the first step of autocon- figuration consists of multicasting† a request to all nodes to discover the network prefix being used. If no prefix is available, the node uses a value that is reserved for local communication.
+
+  - Step two: generating a unique suffix. In most cases, the large IPv6 address size makes suffix generation easy. IPv6 uses 64 bits of suffix to identify a host. A typical MAC address consists of 48 bits, and is guaranteed to be unique. So, a node uses its MAC address as a unique suffix for IPv6. IEEE standard EUI-64 defines exactly how the 48 bits of a MAC address are placed in a 64-bit field (surprisingly, the MAC address is divided into two parts and 16 bits are inserted between the parts).
+
+** Question                                                           :drill:
+Explain Network Address Translation (NAT.
+
+*** Answer
+  - provides trans- parent communication in the sense that a host at the site appears to have a normal Inter- net connection, and a host in the Internet appears to receive communication from a sin- gle computer at the site rather than from one of many computers.
+
+  - NAT runs as an inline service, which means that NAT must be placed on the con- nection between the Internet and a site. Although NAT is conceptually separate from other facilities and services, most implementations embed NAT in another device such as a Wi-Fi wireless router.
+
+  - all datagrams sent from the site appear to originate from one host, and all da- tagrams sent to the site appear to be sent to one host.
+
+  - The NAT device itself uses DHCP to obtain a globally-valid IPv4 address from the user’s ISP. When a host at the site connects and runs DHCP, the NAT device answers the re- quest and assigns a unique private address, also known as a nonroutable address.
+
+  - When a datagram leaves the site, NAT records the destina- tion along with the sender’s private address. When a datagram arrives, NAT consults the table to determine which computer at the site should receive the reply
+
+
+  - If two hosts at the site attempt to communicate with the same Internet destination, X, the translation table will contain multiple entries for X, and NAT will not be able to route incoming da- tagrams. Basic NAT also fails in situations when two or more applications running on a given host at a site attempt simultaneous communication with different destinations on the Internet. More sophisticated forms of NAT overcome the problem.
+
+  - Twice NAT arranges for the NAT system to interact with the site’s Domain Name System server. When an application on the Internet looks up the domain name of a computer at the site, the DNS server at the site returns the valid IP address that has been assigned to the NAT device, and also creates a new entry in the NAT translation table. Thus, the translation table is initial- ized before the first packet arrives. Although it is not elegant, Twice NAT works for most cases. Twice NAT fails, however, if a client application uses the IP address directly without performing a domain name lookup, or if the client uses a DNS proxy to resolve domain names.
+
+** Question                                                           :drill:
+Explain Network Address and Port Translation (NAPT).
+
+*** Answer
+  - The key to understanding NAPT is to know that applications use protocol port numbers to distinguish among services.
+
+* Chapter 5
+** Question                                                           :drill:
+Three main ideas provide much of the motivation for data communications and help define the scope.
+
+*** Answer
+  - The sources of information can be of arbitrary types
+  - Transmission uses a physical system
+  - Multiple sources of information can share the underlying medium
+
+** Question                                                           :drill:
+Subtopic of data communications: Information Sources, means? 
+
+*** Answer
+A source of information can be either analog or digital. Important concepts include characteristics of signals, such as amplitude, frequency, and phase. Classification is either periodic (occurring regularly) or aperiodic (occurring irregularly). In addition, the subtopic focuses on the conversion between analog and digital representations of information.
+
+
+** Question                                                           :drill:
+Subtopic of data communications: Source Encoder, means?
+
+*** Answer
+Once information has been digi- tized, digital representations can be transformed and converted. Important concepts include data compression and its consequences for communications.
+
+
+** Question                                                           :drill:
+Subtopic of data communications: Encryptor and Decryptor, means?
+
+*** Answer
+To protect information and keep it con- fidential, the information can be encrypted (i.e., scrambled) before transmission and decrypted upon reception. Important concepts in- clude cryptographic techniques and algorithms.
+
+
+** Question                                                           :drill:
+Subtopic of data communications: Chennel Encoder and Decoder, means?
+
+*** Answer
+Channel coding is used to detect and correct transmission errors. Important topics include methods to detect and limit errors, and practical techniques like parity checking, checksums, and cyclic redundancy codes that are em- ployed in computer networks.
+
+
+** Question                                                           :drill:
+Subtopic of data communications: Multiplexor and Demultiplexor, means?
+
+*** Answer
+Multiplexing refers to the way in- formation from multiple sources is combined for transmission across a shared medium. Important concepts include techniques for simultaneous sharing as well techniques that allow sources to take turns when using the medium.
+
+
+** Question                                                           :drill:
+Subtopic of data communications: Modulator and Demodulator, means?
+
+*** Answer
+Modulation refers to the way elec- tromagnetic radiation is used to send information. Concepts in- clude both analog and digital modulation schemes, and devices known as modems that perform the modulation and demodulation.
+
+
+** Question                                                           :drill:
+Subtopic of data communications: Physical Chanel and Transmission, means?
+
+*** Answer
+The subtopic includes transmission media and transmission modes. Important concepts include bandwidth, electrical noise and interference, and channel capacity, as well as transmission modes, such as serial and parallel.
+
+* Chapter 6 (NOTE: Create more from text extraction)
+** Question                                                           :drill:
+Recall that a communications system accepts input from one or more sources and delivers the information from a given source to a specified destination.
+
+Name a few "Information Sources".
+
+*** Answer
+For a network, such as the global Internet, the source and destination of information are a pair of appli- cation programs that generate and consume data. However, data communications theory concentrates on low-level communications systems, and applies to arbitrary sources of information. For example, in addition to conventional computer peripherals such as keyboards and mice, information sources can include microphones, video cameras, sen- sors, and measuring devices, such as thermometers and scales. Similarly, destinations can include audio output devices such as earphones and loud speakers as well as de- vices such as radios (e.g., a Wi-Fi radio) or electric motors.
+
+** Question                                                           :drill:
+Data communications deals with two types of information: analog and digital. How are they characterised?
+
+*** Answer
+  - An analog signal is characterized by a continuous mathematical function — when the input changes from one value to the next, it does so by moving through all possible inter- mediate values. 
+
+  - A digital signal has a fixed set of valid levels, and each change consists of an instantaneous move from one valid level to another
+
+
+** Question                                                           :drill:
+Explain periodic And Aperiodic Signals.
+
+*** Answer
+Signals are broadly classified as periodic if they exhibit repetition or aperiodic (sometimes called nonperiodic), if they do not. For example, the analog signal in Fig- ure 6.1(a) is aperiodic over the time interval shown because the signal does not repeat.
+
+
+** Question                                                           :drill:
+Explain sine waves and signal characteristics.
+
+*** Answer
+The sine wave is the fundamental continuous signal. A general sine wave can be represented by three parameters: amplitude ( ), frequency ( ), and phase ( ). The amplitude is the peak value or strength of the signal over time; typically, this value is measured in volts or watts.
+
+The frequency is the rate (in cycles per second, or Hertz (Hz)) at which the signal repeats. An equivalent parameter is the period ( ) of a signal, which is the amount of time it takes for one repetition; therefore, . If a signal does not change at all, its frequency is zero. If a signal changes instantaneously, its frequency is infinite.
+
+
+** Question                                                           :drill:
+A digital signal has a bit rate of 2000 bps. What is the duration of each bit (bit interval)?
+
+*** Answer
+NOTE: l7 p.40 image
+
+
+** Question                                                           :drill:
+» An analog signal carries 4 bits in each signal unit. If 1000 signal units are sent per second, find the baud rate and the bit rate.
+» Baud rate = [1000 bauds per second (baud/s).]
+» Bit rate = [1000 • 4 = 4000 bps.]
+
+** Question                                                           :drill:
+» The bit rate of a signal is 3000. If each signal unit carries 6 bits, what is the baud rate?
+
+*** Answer
+» Baud rate = 3000 / 6 = 500 baud/s
+
+** Question                                                           :drill:
+How can a digital signal be converted into an equivalent analog signal?
+
+*** Answer
+An arbitrary curve can be represented as a composite of sine waves, where each sine wave in the set has a specific amplitude, frequency, and phase. Because it applies to any curve, Fourier’s theorem also applies to a digital signal. From an engineering perspective, Fourier’s result is impractical for digital signals because ac- curate representation of a digital signal requires an infinite set of sine waves.
+
+  - That is, engineers build equipment to generate analog waves that closely ap- proximate the digital signal 
+  - By choosing sine waves that are the correct multiples of the digital signal frequency, as few as three sine waves can be used.
+
+* Chapter 7  (NOTE: Create more from text extraction)
+** Question                                                           :drill:
+Computer networks use an alternative form of wiring. To understand why, one must know three facts. They are?
+
+*** Answer
+  - Random electromagnetic radiation, called noise, permeates the environ- ment. In fact, communications systems generate minor amounts of electrical noise as a side effect of normal operation.
+
+  - When it hits metal, electromagnetic radiation induces a small signal, which means that random noise can interfere with signals used for communication.
+
+  - Because it absorbs radiation, metal acts as a shield. Thus, placing enough metal between a source of noise and a communication medium can prevent noise from interfering with communication.
+
+** Question                                                           :drill:
+Twisted pair wiring tends to have problems with?
+
+*** Answer
+  - Especially strong electrical noise
+  - Close physical proximity to the source of noise
+  - High frequencies used for communication
+
+** Question                                                           :drill:
+The choice of medium is complex, and involves the evaluation of multiple factors. Items that must be considered include?
+
+*** Answer
+  - Cost: materials, installation, operation, and maintenance
+  - Data rate: number of bits per second that can be sent
+  - Delay: time required for signal propagation or processing
+  - Affect on signal: attenuation and distortion
+  - Environment: susceptibility to interference and electrical noise
+  - Security: susceptibility to eavesdropping
+
+** Question                                                           :drill:
+The two most important measures of performance used to assess a transmission medium?
+
+*** Answer
+  - Propagation delay: the time required for a signal to traverse the medium 
+  - Channel capacity: the maximum data rate that the medium can support
+** Question                                                           :drill:
+If a transmission system uses K possible signal levels and has an analog bandwidth B, the Nyquist Theorem states that the maximum data rate in bits per second, D, is?
+
+*** Answer
+D = 2 B log 2 K
+
+** Question                                                           :drill:
+the maximum data rate that could be achieved over a transmission system that experiences noise. The result, called Shannon’s Theorem†, can be stated as?
+
+*** Answer
+C = B log 2 ( 1 + S/N)
+
+where C is the effective limit on the channel capacity in bits per second, B is the hardware bandwidth, and S/ N is the signal-to-noise ratio, the ratio of the average signal power divided by the average noise power.
+
+** Question                                                           :drill:
+The signal-to-noise ratio is often given in decibels (abbreviated dB), where a decibel is defined as a [measure of the difference] between two [power levels].
+
+Using dB as a measure may seem usual, but has two interesting advantages. First, a negative dB value means that the signal has [been attenuated (i.e., reduced)], and a po- sitive dB value means the signal has been [amplified].
+
+Second, if a communications system has multiple parts arranged in a sequence, the decibel measures of the parts can be summed to produce a measure of the [overall system].
+
+* Chapter 9
+** Question                                                           :drill:
+We use the term transmission mode to refer to the manner in which data is sent over the underlying medium. Transmission modes can be divided into two fundamental categories. They are?
+
+*** Answer
+Serial — one bit is sent at a time
+Parallel — multiple bits are sent at the same time
+
+** Question                                                           :drill:
+A parallel mode of transmission has two chief advantages. They are?
+
+*** Answer
+  - High Throughput. Because it can send N bits at the same time, a parallel interface can send N bits in the same time it takes a serial interface to send one bit.
+  - Match To Underlying Hardware. Internally, computer and com- munication hardware uses parallel circuitry. Thus, a parallel inter- face matches the internal hardware well. 
+
+** Question                                                           :drill:
+Most communications systems use serial mode. There are three main reasons. They are?
+
+*** Answer
+  - First, a serial transmis- sion system costs less because fewer physical wires are needed and intermediate elec- tronic components are less expensive. 
+  - Second, parallel systems require each wire to be exactly the same length (even a difference of millimeters can cause problems).
+  - Third, at extremely high data rates, signals on parallel wires can cause electromagnetic noise that interferes with signals on other wires.
+
+
+** Question                                                           :drill:
+Engineers use the term little-endian to describe [a system that sends the LSB first], and the term big-endian to describe a system that [sends the MSB first]. Either form can be used, but the sender and receiver [must agree].
+
+[It is possible to choose a byte
+order and a bit order independently.]
+
+** Question                                                           :drill:
+Explain Frequency-Shift Keying (FSK).
+
+*** Answer
+» Two binary values are represented by two different frequencies near
+the carrier frequency (Binary FSK).
+» Can use more frequencies (Multi FSK) to encode the signal.
+» A signal element represents more than one bit.
+
+** Question                                                           :drill:
+Explain Phase-Shift Keying (PSK).
+
+*** Answer
+» The phase of the carrier signal is shifted to represent binary values.
+» Binary PSK uses two phases to represent the two binary values.
+» 180 (pi ) shift (-1) common
+» Four level uses (pi/2) shift.
+» Multilevel.
+
+** Question                                                           :drill:
+Which is better, ASK or FSK?
+
+*** Answer
+» In terms of bandwidth efficiency, ASK and FSK are the same.
+» PSK is better.
+» Digital signalling is similar to ASK, FSK, and PSK:
+» Multilevel techniques is an advantage for analog signaling
+
+** Question                                                           :drill:
+Explain the overhead of asynchronous transmission.
+
+*** Answer
+To understand the overhead, compare the transmission of 8-bit characters on an asynchro- nous system as illustrated in Figure 9.5 and on a synchronous system as illustrated in Figure 9.6. Each character sent using RS-232 requires an extra start bit and stop bit, meaning that each 8-bit character requires a minimum of 10 bit times, even if no idle time is inserted. On a synchronous system, each character is sent without start or stop bits.
+
+#+BEGIN_QUOTE
+When compared to synchronous transmission an asynchronous RS-232 mechanism has 25% more overhead per character.
+#+END_QUOTE
+
+** Question                                                           :drill:
+Framing: an interface is added to a synchronous mechanism that [accepts and delivers] a block of bytes known as a [frame]. To ensure that the sender and receiver stay synchronized, a frame starts with a [special sequence of bits]. Furthermore, most synchronous systems include a special idle sequence (or idle byte) that is transmitted when the sender has [no data to send].
+
+** Question                                                           :drill:
+A communications channel is classified as one of three types, depending on the direction of transfer: 
+
+*** Answer
+  - Simplex
+  - Full-Duplex
+  - Half-Duplex
+
+** Question                                                           :drill:
+Simplex. A simplex mechanism is [the easiest to understand. As the name implies, a simplex mechanism can only transfer data in a single direction. For example, a single optical fiber acts as a simplex transmission mechanism because the fiber has a transmit-]
+
+** Question                                                           :drill:
+Full-Duplex: [A full-duplex mechanism is also straightforward: the underlying system allows transmission in two directions simultaneously. Typically a full-duplex mechanism consists of two simplex mechanisms, one carrying information in each direction. For example, a pair of optical fibers can be used to provide full-duplex communication by running the two in parallel and arranging to send data in opposite directions. Full duplex communication is analogous to a voice tele- phone conversation in which a participant can speak even if they are able to hear background music at the other end.]
+
+** Question                                                           :drill:
+Half-Duplex: [A half-duplex mechanism involves a shared transmission medium. The shared medium can be used for communication in each direction, but the communication cannot proceed simultaneously. Thus, half-duplex communication is analogous to using walkie-talkies where only one side can transmit at a time. An additional mechanism is needed at each end of a half-duplex communication that coordinates transmission to ensure that only one side transmits at a given time.]
+
+* Chapter 10
+** Question                                                           :drill:
+We use the term modulation to refer to [changes made in a carrier according to the information being sent. Conceptually, modulation takes two inputs, a carrier and a sig- nal, and generates a modulated carrier as output]
+
+** Question                                                           :drill:
+In essence, a sender must change one of the fundamental characteristics of the wave. Thus, there are three primary techniques that modulate an electromagnetic carrier ac- cording to a signal. They are?
+
+
+*** Answer
+  - Amplitude modulation
+  - Frequency modulation
+  - Phase shift modulation
+
+The first two methods of modulation are the most familiar and have been used exten- sively. Indeed, they did not originate with computer networks — they were devised and used for broadcast radio, and are also used for broadcast television.
+
+** Question                                                           :drill:
+A technique known as amplitude modulation varies the [amplitude] of a [carrier] in proportion to the [information being sent (i.e., according to a signal)]. The carrier continues [oscillating] at a fixed [frequency], but the amplitude of the wave [varies]
+
+** Question                                                           :drill:
+An alternative to amplitude modulation is known as [frequency modulation]. When [frequency modulation] is employed, the amplitude of the carrier [remains fixed], but the frequency changes according to [the signal]: when the [signal] is stronger, the carrier fre quency [increases slightly], and when the signal is weaker, the carrier frequency [decreases slightly].
+
+** Question                                                           :drill:
+The third property of a sine wave is its phase, the [offset] from a reference time at which the sine wave [begins]. It is possible to use changes in phase to represent [a signal]. We use the term phase shift to characterize such changes.
+
+[Although modulating phase is possible in theory, the technique is seldom used with an analog signal. To understand why, observe that if phase changes after cycle k, the next sine wave will start slightly later than the time at which cycle k completes. A slight delay resembles a change in frequency. Thus, for analog input, phase shift modu- lation can be thought of as a special form of frequency modulation.]
+
+** Question                                                           :drill:
+Thus, data communications systems often use techniques that can send more bits. In particular, phase shift keying changes the phase of the [carrier wave abruptly] to [encode data]. Each such change is called a [phase shift]. After a [phase shift], the carrier continues to [oscillate], but it immediately jumps to a new [point] in the [sine wave] cycle.

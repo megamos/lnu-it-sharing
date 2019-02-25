@@ -1,0 +1,545 @@
+* NOTES TO READER
+This document is not done yet, and many chapters are mostly extracted and make flashcards of in the org.drill file.
+
+* Chapter 1
+  - programmers no longer create software for a single computer; they write applications that communicate across the Internet.
+  - *The five key aspects of networking:*
+    - Network applications and network programming
+    - Data communications
+    - Packet switching and networking technologies
+    - Internetworking with TCP/IP
+    - Additional networking concepts and technologies
+  - 
+#+BEGIN_QUOTE
+A programmer who understands the underlying network mechanisms
+and technologies can write network applications that are faster, more
+reliable, and less vulnerable.
+#+END_QUOTE
+
+  - The term data communications refers to the study of low-level mechanisms and technologies used to send information across a physical communication medium, such as a wire, radio wave, or light beam.
+    - In the case of modulation, the concept of bandwidth re- lates directly to network throughput.   
+#+BEGIN_QUOTE
+Although it deals with many low-level details, data communications
+provides a foundation of concepts on which the rest of networking is
+built.
+#+END_QUOTE
+  - Packet switching divides data into small blocks, called packets, and includes an identification of the in- tended recipient in each packet.
+#+BEGIN_QUOTE
+Because each network technology is created to meet various require-
+ments for speed, distance, and economic cost, many packet switching
+technologies exist. Technologies differ in details such as the size of
+packets and the method used to identify a recipient.
+#+END_QUOTE
+  - One of the primary reasons for the success of TCP/IP standards lies in their toler- ance of heterogeneity. Instead of attempting to dictate details about packet switching technologies, such as packet sizes or the method used to identify a destination, TCP/IP
+takes a virtualization approach that defines a network-independent packet and a network-independent identification scheme, and then specifies how the virtual packets are mapped onto each underlying network
+
+#+BEGIN_QUOTE
+A public network is owned by a service provider, and offers service to any individual or organization that pays the subscription fee.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+A network is said to be private if use of the network is restricted to one group. A private network can include circuits leased from a ser- vice provider.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+A communication protocol specifies the details for one aspect of com- puter communication, including actions to be taken when errors or unexpected situations arise. A given protocol can specify low-level details, such as the voltage and signals to be used, or high-level items, such as the format of messages that application programs exchange.
+#+END_QUOTE
+
+  - The fundamental abstraction used to collect protocols into a unified whole is known as a layering model. In essence, a layering model describes how all aspects of a communication problem can be partitioned into pieces that work together. Each piece is known as a layer; the terminology arises because protocols in a suite are organized into a linear sequence. Dividing protocols into layers helps both protocol designers and im- plementors manage the complexity by allowing them to concentrate on one aspect of communication at a given time.
+
+  - TCP/IP Layers
+    1. Protocols in the Physical layer specify details about the underlying transmission medium and the associated hardware. All specifications related to electrical properties, radio frequencies, and signals belong in layer 1.
+
+    2. Protocols in the MAC layer specify details about communication over a single net- work and the interface between the network hardware and layer 3, which is usually im- plemented in software. Specifications about network addresses and the maximum pack- et size that a network can support, protocols used to access the underlying medium, and hardware addressing belong in layer 2.
+
+    3. Protocols in the Internet layer form the fundamental basis for the Internet. Layer 3 protocols specify communication between two computers across the Internet (i.e., across multiple interconnected networks). The Internet addressing structure, the format of In- ternet packets, the method for dividing a large Internet packet into smaller packets for transmission, and mechanisms for reporting errors belong in layer 3
+
+    4. Protocols in the Transport layer provide for communication from an application program on one computer to an application program on another. Specifications that control the maximum rate a receiver can accept data, mechanisms to avoid network congestion, and techniques to ensure that all data is received in the correct order belong in layer 4.
+
+    5. Protocols in the top layer of the TCP/IP stack specify how a pair of applications interact when they communicate. Layer 5 protocols specify details about the format and meaning of messages that applications can exchange as well as procedures to be fol- lowed during communication. In essence, when a programmer builds an application that communicates across a network, the programmer devises a layer 5 protocol. Specifications for email exchange, file transfer, web browsing, voice telephone service, smart phone apps, and video teleconferencing belong in layer 5.
+
+  - They also created the OSI set of internetworking protocols as competitors to the Internet protocols. The organizations are:
+    - International Organization for Standardization (ISO)
+    - Telecommunication Standardization Sector of the International Telecommunications Union (ITU)†
+    - Eventually, it became clear that TCP/IP technology was technically superior to OSI, and in a matter of a few years, efforts to develop and deploy OSI protocols were terminated.
+
+* Chapter 2
+  - ARPA
+  - Cloud computing
+
+* Chapter 3
+  - The Internet supports two basic communication paradigms: a stream paradigm and a message paradigm. Figure 3.1 summarizes the differences.
+#+BEGIN_QUOTE
+A programmer who chooses the message paradigm must ensure that the application operates correctly, even if packets are lost or reor- dered.
+#+END_QUOTE
+  - Because providing guarantees requires special expertise in the design of protocols, most programmers choose the stream service — fewer than 5% of all packets in the In- ternet use the message service.
+  - Circular Dependencies Among Servers
+
+#+BEGIN_QUOTE
+A concurrent server uses threads of execution to handle requests from multiple clients at the same time. Doing so means that a client does not have to wait for a previous client to finish.
+#+END_QUOTE
+
+  - Sockets:
+    - Socket programming differs from conventional I/O because an application must specify many details, such as the address of a remote computer, a protocol port number,
+    - Because many servers are concurrent, sockets are designed to work with concurrent applications. When a new thread is created, the new thread inherits access to all sockets that the creating thread owned.
+#+BEGIN_QUOTE
+When an application creates a socket, the operating system returns a small integer descriptor that the application uses to reference the socket.
+#+END_QUOTE
+
+* Chapter 4
+#+BEGIN_QUOTE
+To allow applications for standardized services to interoperate, an application-layer protocol standard is created independent of any im- plementation.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+HyperText Markup Language (HTML) is a representation standard for web pages. To permit a page to be displayed on an arbitrary de- vice, HTML gives general guidelines for display and allows a browser to choose details.
+#+END_QUOTE
+
+- The Web uses a syntactic form known as a Uniform Resource Locator (URL) to specify a web page. The general form of a URL is: protocol:// computer_name:port/ document_name?parameters 
+
+- HTTP can be characterized as follows:
+  - Uses textual control messages
+  - Transfers binary data files
+  - Can download or upload data
+  - Incorporates caching
+
+  - Once it establishes a connection, a browser sends an HTTP request to the server. The four major request types:
+GET
+Requests a document; server responds by sending status
+information followed by a copy of the document
+
+HEAD Requests status information; server responds by sending
+status information, but does not send a copy of the document
+
+POST Sends data to a server; the server appends the data to a
+specified item (e.g., a message is appended to a list)
+
+PUT
+Sends data to a server; the server uses the data to completely
+replace the specified item (i.e., overwrites the previous data)
+- Version information is important in HTTP because it allows the protocol to change and yet remain backward compatible. For example, when a browser that uses version 1.0 of the protocol interacts with a server that uses a higher version, the server reverts to the older version of the protocol and formulates a response accordingly.
+
+- general format of lines in a basic response header:
+  - Field status_code is a numeric value represented as a character string of decimal digits that denotes a status
+  - status_string is a corresponding explanation for a hu- man to read. 
+  - server_identification contains a descriptive string that gives a human-readable description of the server, possibly including the server’s domain name. 
+  - datasize field in the Content-Length header specifies the size of the data item that follows, measured in bytes.
+  - document_type field contains a string that informs the browser about the document contents. The string contains two items separated by a slash: the type of the document and its representation. For example, when a server returns an HTML document, the document_type is text/ html, and when the server returns a jpeg file, the type is image/ jpeg.
+
+- Caching provides an important optimization for web access because users tend to visit the same web sites repeatedly. Much of the content at a given site consists of large images that use the Graphics Image Format (GIF) or Joint Photographic Experts Group (JPEG) standards. Such images often contain backgrounds or banners that do not change frequently.
+
+- HTML caching algorithm
+#+BEGIN_SRC
+Given:
+A URL for an item on a web page
+Obtain:
+A copy of the page
+Method:
+if (item is not in the local cache) {
+  Issue GET request and place a copy in the cache;
+} else {
+  Issue HEAD request to the server;
+  if (cached item is up-to-date) {
+    use cached item;
+  } else {
+    Issue GET request and place a copy in the cache;
+  }
+}
+#+END_SRC
+
+- The locality of reference principle that forms the basis for caching applies to the Domain Name System in two ways:
+  - Spatial: A user tends to look up the names of local computers more often than the names of remote computers
+  - Temporal: A user tends to look up the same set of domain names repeatedly
+p
+#+BEGIN_QUOTE
+Because each DNS Resource Record generated by an authoritative server specifies a cache timeout, a DNS server never returns a stale answer.
+#+END_QUOTE
+
+- The resolver software in most computer systems caches the answers from DNS lookups, which means that successive requests for the same name do not need to use the network
+
+#+BEGIN_QUOTE
+Each entry in a DNS server has a type. When a resolver looks up a name, the resolver specifies the type that is desired, and the DNS server returns only entries that match the specified type.
+#+END_QUOTE
+
+* Chapter 5
+#+BEGIN_QUOTE
+Although it includes concepts from physics and mathematics, data communications does not merely offer abstract theories. Instead, data communications provides a foundation that is used to construct prac- tical communications systems.
+#+END_QUOTE
+
+  - Each source needs a mechanism to gather the information, prepare the informa- tion for transmission, and transmit the information across the shared physical medium. Similarly, a mechanism is needed that extracts the information for the destination and delivers the information.
+
+* Chapter 6
+#+BEGIN_QUOTE
+Ch. 6: Make sure you understand the terms, e.g., Bit rate, Baud, Bandwidth, Lossy and less-less compression. Also, learn how a digital signal is converted to analog on a high level (steps and challenges, no need for deep understanding of these).
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+Throughout the study of data communications, it is important to remember that the source of information can be arbitrary and in- cludes devices other than computers.
+#+END_QUOTE
+** Signals
+» To be transmitted, data must be transformed to electromagnetic
+signals.
+» Signals can be analog or digital. Analog signals can have an infinite number of values in a range; digital signals can have only a limited
+number of values.
+» In data communication, we commonly use periodic analog signals
+and aperiodic digital signals.
+  - A continuous signal is one in which the signal intensity varies in a smooth fashion over time. A discrete signal is one in which the signal intensity maintains a constant level for some period of time and then changes to another constant.
+
+
+** Digital Signals
+» A sequence of discrete, discontinuous voltage pulses:
+» signal elements
+» Data bits are encoded as signal elements.
+» Data rate and bit interval.
+
+** Analog Signals
+» A continuous constant-frequency signal:
+» Carrier signal
+» Data is transmitted by modulating the carrier signal by using the
+frequency domain parameters:
+» Amplitude ( )
+» Frequency ( )
+» Phase ( )
+
+** Bit rate
+» The bit rate is the number of bits per second.
+
+** Baud
+» The baud rate is the number of signal units per second.
+  - The baud rate is always less than or equal to the bit rate.
+
+** Bandwidth
+»The bandwidth is a property of a medium:
+ » The difference between the highest and the lowest frequencies that the medium can satisfactorily pass.
+
+» The analog bandwidth of a medium is expressed in hertz; the digital bandwidth in bits per second.
+
+** Lossy loss-less compression
+  - We use the term data compression to refer to a technique that reduces the number of bits required to represent data. Data compression is especially relevant to a commun- ications system, because reducing the number of bits used to represent data reduces the time required for transmission. That is, a communications system can be optimized by compressing data before transmission.
+
+  - Lossy compression is generally used with data that a human consumes, such as an image, a segment of video, or an audio file. The key idea is that the compression only needs to preserve details to the level of human perception. That is, a change is accept- able if humans cannot detect the change. We will see that well-known compression schemes such as JPEG (used for images) or MPEG-3 (abbreviated MP3 and used for audio recordings) employ lossy compression.
+
+  - Lossless compression preserves the original data without any change. Thus, loss- less compression can be used for documents or in any situation where data must be preserved exactly. When used for communication, a sender compresses the data before transmission, and the receiver decompresses the result. Because the compression is lossless, arbitrary data can be compressed by a sender and decompressed by a receiver to recover an exact copy of the original. Most lossless compression uses a dictionary approach. Compression finds strings that are repeated in the data, and forms a dictionary of the strings. To compress the data, each occurrence of a string is replaced by a reference to the dictionary. The sender must transmit the dictionary along with the compressed data. If the data con- tains strings that are repeated many times, the combination of the dictionary plus the compressed data is smaller than the original data.
+
+** Digital to analog signal conversion
+an arbitrary curve can be represented as a composite of sine waves, where each sine wave in the set has a specific amplitude, frequency, and phase. Because it applies to any curve, Fourier’s theorem also applies to a digital signal. From an engineering perspective, Fourier’s result is impractical for digital signals because ac- curate representation of a digital signal requires an infinite set of sine waves.
+
+* Chapter 7
+#+BEGIN_QUOTE
+Ch. 7: Make sure you understand the difference between guided and unguided media, and have a high level understanding of the common technologies (e.g., twister pair, coaxial, fiber, radio). Make sure you understand the main points of 19-22.
+#+END_QUOTE
+
+** Guided Media
+» Waves are guided along solid medium:
+» Twisted pair
+» Coaxial cable
+» Optical fiber
+
+Optical fiber has several properties that make it more desirable than copper wiring. Optical fiber is immune to electrical noise, has higher bandwidth, and light traveling across a fiber does not attenuate as much as electrical signals traveling across copper. However, copper wiring is less expensive. Furthermore, because the ends of an optical fiber must be polished before they can be used, installation of copper wiring does not require as much special equipment or expertise as optical fiber. Finally, because they are stronger, copper wires are less likely to break if accidentally pulled or bent.
+
+**  Unguided Media
+» Radio Waves: used for multicast communications, such as radio and
+television.
+» Microwaves: used for unicast communication such as cellular telephones, satellite networks, and wireless LANs.
+» Infrared: used for short-range communication in a closed area using line-of-sight propagation.
+
+** Twister pair
+#+BEGIN_QUOTE
+To reduce the interference caused by random electromagnetic radia- tion, communications systems use twisted pair wiring rather than parallel wires.
+#+END_QUOTE
+
+» Cheap medium. Commonly used for communications within buildings and in telephone networks
+» Cables may hold hundreds of pairs. Neighbor pairs typically have different twist lengths to reduce crosstalk
+  - Produced in unshielded (UTP) and shielded (STP) forms, and in different performance categories
+» CAT 1: Unshielded twisted pair used for telephones, < 0.1 Mbps
+» CAT 2: Unshielded twisted pair used for T1 data, 2 Mbps
+» CAT 3: Improved CAT2 used for computer networks, 10 Mbps
+» CAT 4: Improved CAT3 used for Token Ring networks, 20 Mbps
+» CAT 5: Unshielded twisted pair used for networks, 100 Mbps
+» CAT 5E: Extended CAT5 for more noise immunity, 125 Mbps
+» CAT 6: Unshielded twisted pair tested for 200 Mbps, 200 Mbps
+» CAT 7: Shielded twisted pair with a foil shield around the entire cable plus a shield around each twisted pair, 600 Mbps
+
+
+** Coaxial
+  - offers longer distances and better speeds than twisted pair, due to better shielding. Used for cable TV and local-area networks. 
+  - the wiring has a thick metal shield, formed from braided wires, that completely surrounds a center wire that carries the signal.
+  - The shield in a coaxial cable forms a flexible cylinder around the inner wire that provides a barrier to electromagnetic radiation from any direction. The barrier also prevents signals on the inner wire from radiating electromagnetic energy that could affect other wires.
+  - Using braided wire instead of a solid metal shield keeps coaxial cable flexible, but the heavy shield does make coaxial cable less flexible than twisted pair wiring. 
+
+** Fiber
+  - Optical fibers
+  - Infrared transmission
+  - Point-to-point lasers
+
+» Three components: light source, transmission system, and a
+detector:
+» Optical rays travel in glass or plastic core.
+» The detector generates an electric pulse when hit by light.
+» Used in long distance communication.
+» Not affected by external electromagnetic fields, and do not radiate energy.
+» Light at shallow angles propagate along the fibre, and those that are less than critical angle are absorbed in the jacket
+» The cladding is a glass or plastic with properties that differ from those of the core
+
+The most important type of media that uses light is an optical fiber. Each fiber consists of a thin strand of glass or transparent plastic encased in a plastic cover. A typical optical fiber is used for communication in a single direction — one end of the fiber connects to a laser or LED used to transmit light, and the other end of the fiber connects to a photosensitive device used to detect incoming light. To provide two-way communication, two fibers are used, one to carry information in each direction.
+
+** Radio (Electromagnetic Communication)
+  - The most common form of unguided communication mechanisms consists of wireless networking technologies that use electromagnetic energy in the Radio Frequency (RF) range. 
+  - RF transmission has a distinct advantage over light because RF energy can traverse long distances and penetrate objects such as the walls of a building.
+  - We use the term spectrum to refer to the range of possible frequencies; governments around the world allocate frequencies for specific purposes
+
+
+** Sections 19-22 (Main points)
+NOTE: In drills
+
+#+BEGIN_QUOTE
+Shannon’s Theorem informs engineers that no amount of clever en- coding can overcome the laws of physics that place a fundamental limit on the number of bits per second that can be transmitted in a real communications system.
+#+END_QUOTE
+
+* Chapter 9
+#+BEGIN_QUOTE
+Ch. 9: 1-5, 10, 12. Also, make sure you understand the difference between synchronous and asynchronous transmission.
+#+END_QUOTE
+
+** Parallel Transmission
+The term parallel transmission refers to a transmission mechanism that transfers multiple data bits at the same time over separate media. In general, parallel transmis- sion is used with a wired medium that uses multiple, independent wires. Furthermore, the signals on all wires are synchronized so that a bit travels across each of the wires at precisely the same time.
+
+a parallel interface usually contains other wires that allow the sender and receiver to coordinate. Second, to make installation and troubleshooting easy, the wires for a parallel transmission system are placed in a single physical cable.
+
+
+** Serial Transmission
+To use serial transmission, the sender and receiver must contain a small amount of hardware that converts data from the parallel form used in the device to the serial form used on the wire.
+
+
+The hardware needed to convert data between an internal parallel form and a serial form can be straightforward or complex, depending on the type of serial communication mechanism. In the simplest case, a single chip that is known as a Universal Asynchro- nous Receiver and Transmitter (UART) performs the conversion. A related chip, Universal Synchronous-Asynchronous Receiver and Transmitter (USART) handles conversion for synchronous networks.
+
+
+
+** Synchronous transmission.
+
+
+
+** Asynchronous transmission.
+  - Data rate is known/fixed. Start and stop bits are used to synchronize. Data is transmitted as characters (often 7 or 8 bit ASCII).
+
+** Communication channel types
+A communications channel is classified as one of three types, depending on the direction of transfer: 
+  - Simplex
+  - Full-Duplex
+  - Half-Duplex
+
+* Chapter 10
+#+BEGIN_QUOTE
+Ch. 10: 3-6, 9. The important part in this chapter is to understand how you can encode many bits per baud, i.e., a high level understanding of different ways to modulate.
+#+END_QUOTE
+
+** Analog Modulation Schemes
+  - We use the term modulation to refer to changes made in a carrier according to the information being sent. Conceptually, modulation takes two inputs, a carrier and a sig- nal, and generates a modulated carrier as output,
+
+
+** Phase Shift Keying
+  - A phase shift is measured by the angle of the change
+
+* Chapter 11
+#+BEGIN_QUOTE
+Ch. 11: 1-4, 6, 8-14
+#+END_QUOTE
+
+  - 
+
+* Chapter 13
+  - All Sections
+
+* Chapter 14
+Ch. 14: 1-2, 5, 6 (Read 3-4, but not included on exam)
+
+* Chapter 15
+  - All Sections
+
+* Chapter 16
+» Ch. 16: 1-2, 4-12, 15-17 (big picture)
+
+* Chapter 17
+#+BEGIN_QUOTE
+Ch. 17: 1-2, and 4-9
+#+END_QUOTE
+
+* Chapter 18
+#+BEGIN_QUOTE
+Ch. 18: All.
+#+END_QUOTE
+
+* Chapter 20
+Despite the incompatibilities among network technologies, researchers have de-vised a scheme that provides universal service among heterogeneous networks. Calledinternetworking, the scheme uses both hardware and software. Additional hardwaresystems are used to interconnect a set of physical networks. Software on the attachedcomputers then provides universal service. The resulting system ofconnected physicalnetworks is known as an internetwork or internet.
+
+#+BEGIN_QUOTE
+An Internet router is a special-purpose hardware system dedicated tothe task of interconnecting networks. A router can interconnect net-
+works that use different technologies, including different media, physi-cal addressing schemes, or frame formats.
+#+END_QUOTE
+
+  - TCP/IP protocols make it pos-sible for any pair of hosts to communicate, despite hardware differences
+
+#+BEGIN_QUOTE
+An Internet address (IP address) is a unique binary number assignedto a host and used for all communication with the host. IPv4 uses
+32-bit addresses, and IPv6 uses 128-bit addresses.
+#+END_QUOTE
+
+  - Instead, an IP prefix identifies the physical network to which thehost is attached, and an IP suffix identifies a specific computer on the network.
+
+  - The original IPv4 addressing scheme divided addresses into classes.Class D addresses are still used for multicasting, but multicasting isnot available across the global Internet.
+
+  - As the Internet grew, the original IPv4 classful addressing scheme became a limita-tion. Two new mechanisms were invented to overcome the limitation:
+    - Subnet addressing
+    - Classless addressing
+
+  - The classless andsubnet addressing schemes require hosts and routers that process addresses to store an additional piece ofinformation: a value that specifies the exact boundary between the network prefix and the host suffix. To mark the boundary, IPv4 uses a 32-bit value(and IPv6 uses a 128-bit value) known as an address mask, which was originally calleda subnet mask. An address mask has one bits to mark the network prefix and zero bits to mark the host portion.
+
+* Chapter 21
+  - To make it easier for humans to specify and interpret mask values, dotted decimalnotation was extended. In the extended version, which is known as CIDR notation, anaddress and a mask can be specified by giving a dotted decimal address followed by a
+slash and a decimal number that specifies the number of contiguous, left-justified onebits in the mask.
+
+  - The directed broadcast address for a network is formed by adding a suffix that consists of all 1 bits to the network prefix. Thus, the host suffix that consists of all 1 bits is reserved — if an administrator inadvertently assigns the all-ones suffix to a specific
+computer, software may malfunction.
+
+  - Limited broadcast isused during system startup by a computer that does not yet know the network number.
+IPv4 reserves the address consisting of thirty-two 1 bits to refer to limited broad-cast.
+
+  - a computercan use to obtain its IP address automatically when the computer boots. Interestingly,
+the startup protocols use IP to communicate. When using such startup protocols, acomputer cannot supply a correct IP source address. To handle such cases, IPv4reserves the address that consists of all zeroes to mean this computer†
+
+  - IP reserves the network prefix 127 / 8 for use with loopback. The host addressused with 127 is irrelevant — all host addresses are treated the same. By convention,programmers often use host number 1, making 127.0.0.1 the most popular loopback ad-
+dress.
+
+#+BEGIN_QUOTE
+An IPv4 address does not identify a specific computer. Instead, eachIP address identifies a connection between a computer and a network.
+A computer with multiple network connections (e.g., a router) must beassigned one IPv4 address for each connection.
+#+END_QUOTE
+
+  - Yes. A host computer with multiple network connections is said to be multihomed. Multihoming is sometimes used to in-
+crease reliability — if one network fails, the host can still reach the Internet through thesecond connection. Alternatively, multihoming is used to increase performance — con-nections to multiple networks can make it possible to send traffic directly and avoid
+routers, which are sometimes congested.
+
+* Chapter 22
+  - Because it includes incompatible networks, the Internet cannot adopta particular hardware packet format. To accommodate heterogeneity,
+the Internet Protocol defines a hardware-independent packet format.
+
+  - A packet sent across a TCP/IP internet is called an IP datagram.Each datagram consists of a header followed by a data area, which is
+known as the payload.
+
+  - What does a datagram header contain?
+    In particular, the headercontains the address of the source (the original sender), the address of the destination
+(the ultimate recipient), and a field that specifies the type of data being carried in thepayload area. Unlike frames sent across a single network, however, a datagram doesnot contain MAC addresses. Instead, each address in the datagram header is an IP address.
+
+  - To make the selection of a next hop efficient, an IP router uses a forwarding table.A forwarding table is initialized when the router boots, and must be updated if the Inter-net topology changes (e.g., a hardware failure causes a link to become unusable).
+
+  - To handle ambiguity that arises from overlapping address masks, Internet forward-ing uses a longest prefix match. That is, instead of examining the entries in arbitraryorder, forwarding software arranges to examine entries with the longest prefix first.
+
+  - To handle ambiguity that arises from overlapping address masks, Internet forward-ing uses a longest prefix match. That is, instead of examining the entries in arbitrary order, forwarding software arranges to examine entries with the longest prefix first.
+
+#+BEGIN_QUOTE
+Because IP is designed to operate over all types of network hardware,including hardware that experiences problems, IP datagrams may be
+lost, duplicated, delayed, delivered out of order, or delivered with cor-rupted data.
+#+END_QUOTE
+
+  - Each hardware technology specifies the maximum amount of data that a frame can carry. The limit is known as a Maximum Transmission Unit (MTU).
+
+  - IPv4 and IPv6 both use a technique known as fragmentation to solve the problem of heterogeneous MTUs. The datagram is divided into smaller pieces, called fragments, and each fragment is transmitted in a separate frame. However, IPv6 changed when and how fragmentation is performed:
+    - IPv4 arranges for a router to perform fragmentation as needed.
+    - IPv6 requires the sending host to perform fragmentation.
+
+  - FRAGMENT OFFSET field in the header of a fragment specifies where in the original datagram the fragment belongs.
+
+  - IPv6 places the fragment information in a separate fragment extension header; the presence of
+the extension header identifies the datagram as a fragment. 
+
+  - IPv6 divides headers into two groups, called fragmentable and unfrag- mentable. The fragmentable headers are divided into fragments like the payload, and the unfragmentable headers are copied into each fragment.
+
+  - The minimum MTU along a path from a source to a destination is known as the path MTU, and the process of learning the path
+MTU is known as path MTU discovery 
+
+#+BEGIN_QUOTE
+In IPv6, fragmentation is performed by the sending host, and not by routers. If fragmentation is required, the sending host receives an
+ICMP error message, and reduces the fragment size until fragments can be sent to the destination.
+#+END_QUOTE 
+
+#+BEGIN_QUOTE
+On a lossy network, such as a wireless LAN that experiences interfer- ence, the probability of losing a datagram is higher if the datagram is fragmented. Therefore, as a general rule, fragmentation should be avoided when possible.
+#+END_QUOTE
+
+* Chapter 23
+#+BEGIN_QUOTE
+IP addresses are abstractions provided by protocol software. Because physical network hardware does not understand IP addresses, a next- hop IP address must be translated to an equivalent MAC address be- fore a frame can be sent.
+#+END_QUOTE
+
+  - Address resolution is always restricted to a single network at a time. 
+  - A computer can resolve the address of another computer only if both computers attach to the same physical network — a computer never needs to resolve the address of a com- puter on a remote network
+
+#+BEGIN_SRC 
+Given:
+  An incoming ARP message (either a request or a response)
+Perform:
+  Process the message and update the ARP cache
+Method:
+  Extract the sender’s IP address, I, and MAC address, M
+If ( address I is already in the ARP cache ) {
+  Replace the MAC address in the cache with M
+}
+if ( message is a request and target is “me” ) {
+  Add an entry to the ARP cache for the sender
+  provided no entry exists;
+  Generate and send a response;
+}
+#+END_SRC
+
+#+BEGIN_QUOTE
+ARP forms a conceptual boundary — protocols above ARP use IP ad- dresses, and protocols below ARP use MAC addresses.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+The Internet Control Message Protocol includes both messages about errors and informational messages. ICMP encapsulates messages in IP for transmission, and IP uses ICMP to report problems.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+Protocol software is parameterized to allow it to run in a variety of network environments. Software must be configured by assigning values for a set of parameters that supply information about the computer and the network(s) to which it attaches.
+#+END_QUOTE
+
+* Chapter 24
+  - Instead of adding additional features to IP to identify applications, the designers of the TCP/IP protocols placed end-to-end protocols in a separate layer, layer 4.
+
+#+BEGIN_QUOTE
+UDP provides an end-to-end service that allows an application pro- gram to send and receive individual messages, each of which travels in a separate datagram. An application can choose to restrict com- munication to one other application program or communicate with multiple applications.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+Although a programmer’s intuition suggests that using larger mes- sages will increase efficiency, if a UDP message is larger than the network MTU, IP will fragment the resulting datagram, which reduces efficiency.
+#+END_QUOTE
+
+  - As a consequence, many programmers who use UDP choose a message size that produces datagrams that fit in a standard MTU. In particular, because most parts of the Internet now support an MTU of 1500 octets, programmers often choose a message size of 1400 or 1450 to leave space for IP and UDP headers.
+
+  - Omitting the source and destination IP addresses makes UDP smaller and more ef- ficient, but introduces the possibility of error. In particular, if IP malfunctions and delivers a UDP message to an incorrect destination, UDP cannot use header fields to determine that an error occurred.
+
+* Chapter 25
+#+BEGIN_QUOTE
+TCP provides a reliable, connection-oriented, full-duplex stream transport service that allows two application programs to form a con- nection, send data in either direction, and then terminate the connec- tion. Each TCP connection is started reliably and terminated grace- fully.
+#+END_QUOTE
+
+  - TCP software is needed at each end of a virtual connection, but not on intermediate routers. From TCP’s point of view, the entire Internet is a com- munication system that can accept and deliver messages without changing or interpreting their contents.
+
+    - To obtain high throughput rates, transport protocols use a flow control technique known as sliding window. The sender and receiver are programmed to use a fixed window size, which is the maximum amount of data that can be sent before an acknowledgement arrives.
+
+
+  - Whenever it sends data, TCP starts a timer, and retransmits the data if the timer expires.
+
+  - TCP’s retransmission scheme is the key to its success because it handles communication across an arbitrary path through the Internet.
+
+  - Thus, they chose to make TCP’s retransmission adaptive. That is, TCP monitors current delay on each connection, and adapts (i.e., changes) the retransmission timer to accommodate changing conditions. 
+
+* NOTES
+** Lec 8 - Errors n such
+** Lec 9 - Networks n such
+  - Frequency and Timebased based (must know)
+  - Some understanding for the different networks (lan/wan)
+  - Multi-accesss protocols: We care about Controlled AP and Random AP (access protocoll)
+  - 
+** Lec 10 - Lots more Stuffs (ask always)
+   - 
